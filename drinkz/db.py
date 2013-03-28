@@ -2,6 +2,8 @@
 Database functionality for drinkz information.
 """
 
+from . import unitConversion
+
 # private singleton variables at module level
 _bottle_types_db = set()
 _inventory_db = {}
@@ -50,22 +52,10 @@ def get_liquor_amount(mfg, liquor):
 
 def convert_to_ml(amount):
     # amount is going to be in format "number units"
-    num, units = amount.split()
-    num = float(num)
-    units = units.lower()
+    newNum = unitConversion.convert_to_ML(amount)
 
-    if units == 'ml':
-        pass
-    elif units == 'liter':
-        num = 1000.0 * num
-    elif units == 'oz':
-        num = 29.5735 * num
-    elif units == 'gallon' or units == 'gallons':
-        num = 3785.41 * num
-    else:
-        raise Exception("unknown unit %s" % units)
-
-    return num
+    return newNum
+    
 
 def get_liquor_inventory():
     "Retrieve all liquor types in inventory, in tuple form: (mfg, liquor)."
