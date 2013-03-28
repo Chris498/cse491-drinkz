@@ -1,0 +1,56 @@
+#! /usr/bin/env python
+import sys
+import _mypath
+
+from drinkz.app import SimpleApp
+from wsgiref.simple_server import make_server
+import urlparse
+import simplejson
+
+from drinkz import db
+from drinkz import recipes
+
+db.add_bottle_type('Johnnie Walker', 'black label', 'blend
+db.add_to_inventory('Johnnie Walker', 'black label', '500 
+
+db.add_bottle_type('Uncle Herman\'s', 'moonshine', 'blende
+db.add≈
+
+_to_inventory('Uncle Herman\'s', 'moonshine', '5 lit
+
+db.add_bottle_type('Gray Goose', 'vodka', 'unflavored vodk
+db.add_to_inventory('Gray Goose', 'vodka', '1 liter')
+
+db.add_bottle_type('Rossi', 'extra dry vermouth', 'vermout
+db.add_to_inventory('Rossi', 'extra dry vermouth', '24 oz'
+
+r = recipes.Recipe('scotch on the rocks', [('blended scotc
+                                            '4 oz')])
+db.add_recipe(r)
+r = recipes.Recipe('vodka martini', [('unflavored vodka',
+                                     ('vermouth', '1.5 oz'
+db.add_recipe(r)
+r = recipes.Recipe('vomit inducing martini', [('orange jui
+                                               '6 oz'),
+                                              ('vermouth',
+                                               '1.5 oz')])
+
+db.add_recipe(r)
+
+def main(args):
+    import random, socket
+    port = random.randint(8000, 9999)
+        
+    myApp = SimpleApp()
+        
+    httpd = make_server('', port, myApp)
+    print "Serving on port %d..." % port
+    print "Try using a Web browser to go to http://%s:%d/" % \
+          (socket.getfqdn(), port)
+    httpd.serve_forever()
+
+
+if __name__ == '__main__':
+    exit_code = main(sys.argv)
+    sys.exit(exit_code)
+
