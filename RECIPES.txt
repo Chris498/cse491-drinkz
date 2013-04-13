@@ -1,0 +1,16 @@
+Since I could not figure out how to load in a stardardized format such as XML, I found a way around it... sort of. In my test recipe .txt files in the
+test-data folder, the files are set up as such with the first file resembling:
+
+sunshine,vodkay,100 oz
+
+and the other file is set up with two recipes like:
+
+Moon dust,vodka, 200 oz
+Abrahams Brew,beer,200 oz,gin,50 oz
+
+in the load_bulk_data.py file I load the recipes from the file by line. If the line length is 3 then I know it contains a recipe with a name and one tuple 
+of (liquorType, amount) and if the length is 5 then I know it is a recipe that contains a name and two tuples of (liquorType, amount)
+
+I parse the lines using this information and then create and store recipes into the database.
+
+This can be tested from the commandline from the bin folder by entering:    python2.7 load-recipes testRecipeFile.txt

@@ -10,7 +10,7 @@ Module to load in bulk data from text files.
 
 import csv                              # Python csv package
 
-from . import db                        # import from local package
+from . import db, recipes                        # import from local package
 
 def load_bottle_types(fp):
     """
@@ -66,6 +66,55 @@ def load_inventory(fp):
         n += 1
         db.add_to_inventory(mfg, name, amount)
 
+    return n
+
+
+def load_recipes(fp):
+    
+    reader = parse_csv(fp)
+
+    x = []
+    n = 0
+    for line in reader:
+
+	if(len(line) == 3):
+            try:
+                (name, liquorType, amount) = line
+                print '\n name: %s' % name
+                print '\n liquor Type: %s' % liquorType
+                print '\n amount: %s' % amount
+
+            except ValueError:
+	        print 'Badly formatted line: %s' % line
+	        continue
+	
+	    n+=1
+            myTuple = (liquorType, amount)
+            myList = [myTuple]
+            r = recipes.Recipe(name, myList)
+            print r.name
+            print r.ingredients
+	    db.add_recipe(r)
+        if(len(line) == 5):
+            try:
+                (name, liquorType1, amount1,liquorType2,amount2) = line
+                print '\n name: %s' % name
+                print '\n liquor Type: %s' % liquorType1
+                print '\n amount: %s' % amount1
+    		print '\n liquor Type: %s' % liquorType2
+                print '\n amount: %s' % amount2
+            except ValueError:
+                print 'Badly formatted line: %s' % line
+                continue  
+
+            n+=1
+            myTuple1 = (liquorType1, amount1)
+            myTuple2 = (liquorType2, amount2)
+            myList = [myTuple1, myTuple2]
+            r = recipes.Recipe(name, myList)
+            print r.name
+            print r.ingredients
+            db.add_recipe(r)
     return n
 
 def parse_csv(fp):

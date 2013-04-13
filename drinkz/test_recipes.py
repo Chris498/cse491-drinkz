@@ -48,7 +48,9 @@ class TestBasicRecipeStuff(unittest.TestCase):
 
     def test_get_recipe_2(self):
         x = db.get_recipe('scotch on the rocks')
+
         assert not x, x                    # no such recipe
+
 
 class TestIngredients(object):
     def setUp(self):

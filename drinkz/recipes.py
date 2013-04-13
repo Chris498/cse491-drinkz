@@ -1,4 +1,4 @@
-from . import db
+import db
 
 class Recipe(object):
     def __init__(self, name, ingredients):

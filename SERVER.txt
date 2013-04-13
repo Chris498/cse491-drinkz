@@ -1,0 +1,2 @@
+I really don't know how to implement the server from part three of the homework. I got the basics down from reading around and observing the webz
+directory. Currently I run the server.py file and then use grab-page to connect to the port. I did not find a way to implement my app.py in the server.

@@ -2,17 +2,19 @@
 from wsgiref.simple_server import make_server
 import urlparse
 import simplejson
-
-from . import db
-from . import recipes
+import jinja2
+import db
+import recipes
 
 import sys
+loader = jinja2.FileSystemLoader('../drinkz/templates')
+env = jinja2.Environment(loader=loader)
 sys.path.insert(0, 'bin/') # allow _mypath to be loaded; @CTB hack hack hack
 
 import os
 
 db.load_db('../bin/drinkz.txt')
-
+#db.load_db('drinkz.txt')
 dispatch = {
     '/' : 'index',
     '/recipeContent' : 'recipeFile',
@@ -23,7 +25,13 @@ dispatch = {
     '/error' : 'error',
     '/helmet' : 'helmet',
     '/form' : 'form',
+    '/form_liquor_types': 'form_liquor_types',
+    '/form_liquor_inventory': 'form_liquor_inventory',
+    '/form_recipe': 'form_recipe',
     '/recvML' : 'recvML',
+    '/recvLiquorTypes' : 'recvLiquorTypes',
+    '/recvLiquorInventory': 'recvLiquorInventory',
+    '/recvRecipe': 'recvRecipe',
     '/recv' : 'recv',
     '/rpc'  : 'dispatch_rpc',
     '/rpcml' : 'rpc_convert_units_to_ml',
@@ -79,6 +87,12 @@ alert("I am an alert box!");
 	<a href='liquorTypesContent'>liquor types file</a>,
 	<p>
 	<a href='mlForm'>convert to ml (form)</a>
+	<p>
+	<a href='form_liquor_types'>Enter a Liquor type (form) </a>
+	<p>
+        <a href='form_liquor_inventory'>Enter a Liquor inventory (form) </a>
+	<p>
+        <a href='form_recipe'>Enter a Recipe (form) </a>
 <p>
 <input type="button" onclick="myFunction()" value="Show alert box" />    
 </body>
@@ -122,6 +136,21 @@ alert("I am an alert box!");
 #	start_response('200 OK', list(html_headers))
 #	return[data]
 
+    def form_liquor_types(self, environ, start_response):
+	data = form_liquor_types_function()
+        start_response('200 OK', list(html_headers))
+        return [data]
+
+    def form_liquor_inventory(self, environ, start_response):
+        data = form_liquor_inventory_function()
+        start_response('200 OK', list(html_headers))
+        return [data]
+
+    def form_recipe(self, environ, start_response):
+        data = form_recipe_function()
+        start_response('200 OK', list(html_headers))
+        return [data]
+
     def error(self, environ, start_response):
         status = "404 Not Found"
         content_type = 'text/html'
@@ -154,6 +183,58 @@ alert("I am an alert box!");
         
 	start_response('200 OK', list(html_headers))
 	return [data]
+
+    def recvLiquorTypes(self, environ, start_response):
+	formdata = environ['QUERY_STRING']
+        results = urlparse.parse_qs(formdata)
+        type = results['type'][0]
+        type = str(type)
+
+        vars = dict(entry=type, entryName = 'LIQUOR TYPE')
+        template = env.get_template('hw5template.html')
+        content_type = 'text/html'
+
+	data = str(template.render(vars))
+	print template.render(vars)
+        #data = "amount: "
+        #data = "<html><head><title>Liquor Type display page</title><style type='text/css'>h1 {color:red;}body {font-size: 14px;}</style><h1>The Liquor Type Display Page:</h1></head><body>Liquor type: %s. <a href= './'>return to index</a></body></html>" %(type)
+        start_response('200 OK', list(html_headers))
+        return [data]
+
+    def recvLiquorInventory(self, environ, start_response):
+        formdata = environ['QUERY_STRING']
+        results = urlparse.parse_qs(formdata)
+        inventory = results['inventory'][0]
+        inventory = str(inventory)
+        
+        vars = dict(entry=inventory, entryName = 'LIQUOR INVENTORY')
+        template = env.get_template('hw5template.html')
+        content_type = 'text/html'
+        
+        data = str(template.render(vars))
+        print template.render(vars)
+        #data = "amount: "
+        #data = "<html><head><title>Liquor Type display page</title><style type='text/css'>h1 {color:red;}body {font-size: 14px;}</style><$
+        start_response('200 OK', list(html_headers))
+        return [data]
+
+    def recvRecipe(self, environ, start_response):
+        formdata = environ['QUERY_STRING']
+        results = urlparse.parse_qs(formdata)
+        recipe = results['recipe'][0]
+        recipe = str(recipe)
+        
+        vars = dict(entry=recipe, entryName = 'RECIPE')
+        template = env.get_template('hw5template.html')
+        content_type = 'text/html'
+        
+        data = str(template.render(vars))
+        print template.render(vars)
+        #data = "amount: "
+        #data = "<html><head><title>Liquor Type display page</title><style type='text/css'>h1 {color:red;}body {font-size: 14px;}</style><$
+        start_response('200 OK', list(html_headers))
+        return [data]
+
    
     def recv(self, environ, start_response):
         formdata = environ['QUERY_STRING']
@@ -263,6 +344,84 @@ Enter an amount to be converted to ml <input type='text' name = 'amount' size='2
 </body>
 </html>
 """
+
+def form_liquor_types_function():
+
+    return """<html"
+<head>
+<title>Liquor types form page</title>
+<style type='text/css'>
+h1 {color:red;}
+body {
+font-size: 14px;
+}
+</style>
+<h1>The Liquor Types Form Page</h1>
+
+</head>
+<body>
+<form action ='recvLiquorTypes'>
+Enter a liquor type<input type='text' name = 'type' size='20'>
+<input type='submit'>
+<p>
+<p>
+<a href= './'>return to index</a>
+</form>
+</body>
+</html>
+"""
+
+def form_liquor_inventory_function():
+    return """<html"
+<head>
+<title>Liquor types form page</title>
+<style type='text/css'> 
+h1 {color:red;}
+body {      
+font-size: 14px;
+}
+</style>        
+<h1>The Liquor Inventory Form Page</h1>
+        
+</head>
+<body>
+<form action ='recvLiquorInventory'>
+Enter a liquor inventory<input type='text' name = 'inventory' size='20'>
+<input type='submit'>
+<p>
+<p>
+<a href= './'>return to index</a>
+</form>
+</body>
+</html>
+"""
+
+def form_recipe_function():
+    return """<html"
+<head>
+<title>Liquor types form page</title>
+<style type='text/css'> 
+h1 {color:red;}
+body {      
+font-size: 14px;
+}
+</style>        
+<h1>The Recipe Form Page</h1>
+        
+</head>
+<body>
+<form action ='recvRecipe'>
+Enter a Recipe<input type='text' name = 'recipe' size='20'>
+<input type='submit'>
+<p>
+<p>
+<a href= './'>return to index</a>
+</form>
+</body>
+</html>
+"""
+
+
 
 def recipes():
 

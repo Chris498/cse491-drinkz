@@ -3,7 +3,7 @@ Database functionality for drinkz information.
 """
 
 
-from . import unitConversion
+import unitConversion, recipes
 
 from cPickle import dump, load
 
@@ -66,6 +66,11 @@ def add_to_inventory(mfg, liquor, amount):
 def check_inventory(mfg, liquor):
     return ((mfg, liquor) in _inventory_db)
 
+def _check_recipe_exists(recipe):
+    for recipeName in _recipes:
+	if(recipe == _recipes[recipeName]):
+            return True
+    return False
 def get_liquor_amount(mfg, liquor):
     "Retrieve the total amount of any given liquor currently in inventory."
 
@@ -101,4 +106,14 @@ def check_inventory_for_type(generic_type):
             matching_ml.append((m, l, amount))
 
     return matching_ml
+
+def get_recipes_from_inventory():
+    makeableRecipes = {}
+    ingredientsList = []
+    for name in _recipes:
+        ingredientsList = _recipes[name].need_ingredients()
+	if not ingredientsList:
+	    makeableRecipes[name] = _recipes[name]
+        ingredients = []
+    return makeableRecipes
 

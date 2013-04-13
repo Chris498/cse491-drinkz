@@ -1,0 +1,18 @@
+Party Planning
+
+	Story:
+Susie is attending a party that her friend Bob is hosting. Bob wants to know what kind of music Susie and the other guests
+would like to hear. Susie wants to hear a certain kind of music so she needs a place to post her requests.
+
+	Features:
+1. Storage of songs, artists, and albums will be necessary by using an inventory/library of music.
+2. A web interface that allows the host to communicate with the guests. This could include a form that guests can fill out in order to
+request songs.
+3. Another web page might display the top song choices of the guests.
+
+	Data Storage Fucntionality:
+A music object will consist of (song, artist, album) in its constructor. By leaving one of the 3 fields blank, the field will be set
+to null. All of these music object will be stored into a music library. The music library will consist of the guests name as the key
+and the music object as the value. This should be able to be accomplished by the use of forms and jinja2 templating. The web page that
+displays the mucisc requests will loop throught the music library and display each music request. Adding and retrieving music object will
+have to be implemented.
