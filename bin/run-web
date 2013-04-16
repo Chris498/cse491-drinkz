@@ -14,7 +14,8 @@ from drinkz import recipes
 def main(args):
     import random, socket
     port = random.randint(8000, 9999)
-        
+    
+    db.load_db('drinkz.txt')    
     myApp = SimpleApp()
         
     httpd = make_server('', port, myApp)

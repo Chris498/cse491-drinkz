@@ -13,7 +13,7 @@ sys.path.insert(0, 'bin/') # allow _mypath to be loaded; @CTB hack hack hack
 
 import os
 
-db.load_db('../bin/drinkz.txt')
+#db.load_db('../bin/drinkz.txt')
 #db.load_db('drinkz.txt')
 dispatch = {
     '/' : 'index',
@@ -36,8 +36,10 @@ dispatch = {
     '/rpc'  : 'dispatch_rpc',
     '/rpcml' : 'rpc_convert_units_to_ml',
     '/rpcrecipes' : 'rpc_get_recipe_names',
-    '/rpcinventory' : 'rpc_get_liquor_inventory'
-
+    '/rpcinventory' : 'rpc_get_liquor_inventory',
+    '/rpcenterliquor' : 'rpc_enter_liquor_type',
+    '/rpcenterinventory' : 'rpc_enter_inventory',
+    '/rpcenterrecipe' : 'rpc_enter_recipe'
 }
 
 html_headers = [('Content-type', 'text/html')]
@@ -295,21 +297,34 @@ alert("I am an alert box!");
     def rpc_add(self, a, b):
         return int(a) + int(b)
  
-    def rpc_convert_units_to_ml(amount):
+    def rpc_convert_units_to_ml(self,amount):
         newAmount = str(db.convert_to_ml(amount))	
         return newAmount
 
-    def rpc_get_recipe_names():
+    def rpc_get_recipe_names(self):
         nameList = []
 	for r in db.get_all_recipes():     
             nameList.append(r.name)
 	return nameList
 
-    def rpc_get_liquor_inentory():	
+    def rpc_get_liquor_inentory(self):	
 	inventoryList = []
         for m, l in db.get_liquor_inventory():
 	    inventoryList.append((m,l))
 	return inventoryList	
+
+    def rpc_enter_liquor_types(self,mfg,liquor,typ):
+        db.add_bottle_type(mfg,liquor,typ);
+        return 1;
+
+    def rpc_enter_liquor_inventory(self,mfg,liquor,amount):
+	db.add_to_inventory(mfg,liquor,amount)
+        return 1;
+
+    def rpc_enter_recipe(self,r):
+        db.add_recipe(r)
+        return 1;
+
 
 def form():
     return """
