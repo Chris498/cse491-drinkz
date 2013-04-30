@@ -11,7 +11,7 @@ if __name__ == '__main__':
     
     import random, socket
     port = random.randint(8000, 9999)
-    port = 8000
+    #port = 8000
 
     db.load_db(filename)
     app = SimpleApp()

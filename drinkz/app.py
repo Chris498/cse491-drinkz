@@ -3,11 +3,12 @@ from wsgiref.simple_server import make_server
 import urlparse
 import simplejson
 import jinja2
-
-from drinkz import db, recipes
+import db
+import recipes
+#from drinkz import db, recipes
 
 # this sets up jinja2 to load templates from the 'templates' directory
-loader = jinja2.FileSystemLoader('./templates')
+loader = jinja2.FileSystemLoader('../templates')
 env = jinja2.Environment(loader=loader)
 
 dispatch = {
