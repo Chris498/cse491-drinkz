@@ -8,13 +8,14 @@ from cPickle import dump, load
 _bottle_types_db = set()
 _inventory_db = {}
 _recipes = {}
-
+_music = {}
 def _reset_db():
     "A method only to be used during testing -- toss the existing db info."
     global _bottle_types_db, _inventory_db, _recipes
     _bottle_types_db = set()
     _inventory_db = {}
     _recipes = {}
+    _music = {}
 
 def save_db(filename):
     fp = open(filename, 'wb')
@@ -62,6 +63,16 @@ def add_to_inventory(mfg, liquor, amount):
     key = (mfg, liquor)
     _inventory_db[key] = _inventory_db.get(key, 0.0) + convert_to_ml(amount)
     
+def add_to_music(request):
+
+    #if request.name in _music:
+    #    _music[request.name].append(request)
+    #else:        
+    _music[request.name] = request
+
+def get_all_music():
+     return _music.values()
+
 def check_inventory(mfg, liquor):
     return ((mfg, liquor) in _inventory_db)
 

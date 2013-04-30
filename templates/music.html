@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+{% if requests %}
+<h1>Music Requests</h1>
+
+ <ul>
+ {% for r in requests %}
+   <li> Attendee name: {{ r.name }}
+   <ul>
+     <li> Song: {{r.song}}
+     <li> Artist: {{r.artist}}
+     <li> Album: {{r.album}}
+   </ul>
+ {% endfor %}
+ </ul>
+{% else %}
+No music requests yet...
+{% endif %}
+
+
+Add to music requests:
+<b> PLEASE ONLY SUBMIT 1 REQUEST PER PERSON </b>
+<form action="music_add">
+Attendee name: <input type="text" name="name" value = "Enter Name">  (Required)<p>
+Song:<input type="text" name="song" value="No Preference"><p>
+Artist:<input type="text" name="artist" value="No Preference"><p>
+Album:<input type="text" name="album" value="No Preference"><p>
+<input type="submit">
+</form>
+
+{% endblock content %}
+

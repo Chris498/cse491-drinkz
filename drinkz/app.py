@@ -5,10 +5,11 @@ import simplejson
 import jinja2
 import db
 import recipes
+import music
 #from drinkz import db, recipes
 
 # this sets up jinja2 to load templates from the 'templates' directory
-loader = jinja2.FileSystemLoader('../templates')
+loader = jinja2.FileSystemLoader('./templates')
 env = jinja2.Environment(loader=loader)
 
 dispatch = {
@@ -19,6 +20,8 @@ dispatch = {
     '/recipes_add' : 'recipes_add',
     '/liquor_types' : 'liquor_types',
     '/liquor_types_add' : 'liquor_types_add',
+    '/music' : 'music',
+    '/music_add' : 'music_add',
     '/inventory' : 'inventory',
     '/inventory_add' : 'inventory_add',
     '/convert_form' : 'convert_form',
@@ -61,6 +64,15 @@ class SimpleApp(object):
 
         template = env.get_template("recipes.html")
         return str(template.render(locals()))
+    def music(self, environ, start_response):
+        start_response("200 OK", list(html_headers))
+
+        title = "Music Requests"
+        requests = [r for r in db.get_all_music() ]
+
+        template = env.get_template("music.html")
+        return str(template.render(locals()))
+
 
     def liquor_types(self, environ, start_response):
         start_response("200 OK", list(html_headers))
@@ -96,6 +108,31 @@ class SimpleApp(object):
 
         start_response('302 Found', headers)
         return ["Redirect to /inventory..."]
+
+    def music_add(self, environ, start_response):
+        formdata = environ['QUERY_STRING']
+        results = urlparse.parse_qs(formdata)
+        
+
+        name = results['name'][0]
+        song = results['song'][0]
+        artist = results['artist'][0]
+        album =  results['album'][0]
+
+        headers = list(html_headers)
+        headers.append(('Location', '/music'))
+        
+        start_response('302 Found', headers)
+
+
+        if (name == "Enter Name"):
+            return ["Redirect to /music..."]
+        m = music.Request(name,song, artist, album)        
+
+        db.add_to_music(m)
+        
+        return ["Redirect to /music..."]
+
 
     def recipes_add(self, environ, start_response):
         formdata = environ['QUERY_STRING']
