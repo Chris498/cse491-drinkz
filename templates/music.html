@@ -7,12 +7,14 @@
 
  <ul>
  {% for r in requests %}
-   <li> Attendee name: {{ r.name }}
-   <ul>
-     <li> Song: {{r.song}}
-     <li> Artist: {{r.artist}}
-     <li> Album: {{r.album}}
-   </ul>
+   {% for req in r%}
+     <li> <b> Attendee name: </b>{{ req.name }}
+     <ul>
+       <li> <b> Song: </b> {{req.song}}
+       <li> <b> Artist: </b> {{req.artist}}
+       <li> <b> Album: </b> {{req.album}}
+     </ul>
+   {% endfor %}
  {% endfor %}
  </ul>
 {% else %}
@@ -21,7 +23,6 @@ No music requests yet...
 
 
 Add to music requests:
-<b> PLEASE ONLY SUBMIT 1 REQUEST PER PERSON </b>
 <form action="music_add">
 Attendee name: <input type="text" name="name" value = "Enter Name">  (Required)<p>
 Song:<input type="text" name="song" value="No Preference"><p>

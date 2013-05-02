@@ -3,19 +3,28 @@ from wsgiref.simple_server import make_server
 import urlparse
 import simplejson
 import jinja2
+from Cookie import SimpleCookie
+import uuid
 import db
 import recipes
 import music
 #from drinkz import db, recipes
 
 # this sets up jinja2 to load templates from the 'templates' directory
-loader = jinja2.FileSystemLoader('./templates')
+usernames = {}
+
+loader = jinja2.FileSystemLoader('../templates')
 env = jinja2.Environment(loader=loader)
 
 dispatch = {
     '/' : 'index',
+    '/login_1' : 'login1',
+    '/login1_process' : 'login1_process',
+    '/logout' : 'logout',
+    '/status' : 'status',
     '/content' : 'somefile',
     '/error' : 'error',
+    '/explanation' : 'explanation',
     '/recipes' : 'recipes',
     '/recipes_add' : 'recipes_add',
     '/liquor_types' : 'liquor_types',
@@ -25,6 +34,7 @@ dispatch = {
     '/inventory' : 'inventory',
     '/inventory_add' : 'inventory_add',
     '/convert_form' : 'convert_form',
+    '/convert_form_ajax_jsonrpc' : 'convert_form_ajax_jsonrpc',
     '/do_convert' : 'do_convert',
     '/rpc'  : 'dispatch_rpc'
 }
@@ -54,6 +64,76 @@ class SimpleApp(object):
         template = env.get_template("index.html")
 
         title = "index"
+        return str(template.render(locals()))
+
+    def login1(self, environ, start_response):
+        start_response('200 OK', list(html_headers))
+
+        title = 'login'
+        template = env.get_template('login1.html')
+        return str(template.render(locals()))
+
+    def explanation(self, environ, start_response):
+        start_response('200 OK', list(html_headers))
+
+        title = 'HW 6.2 explanation'
+        template = env.get_template('explanation.html')
+        return str(template.render(locals()))
+
+    def login1_process(self, environ, start_response):
+        formdata = environ['QUERY_STRING']
+        results = urlparse.parse_qs(formdata)
+
+        name = results['name'][0]
+        content_type = 'text/html'
+
+        # authentication would go here -- is this a valid username/password,
+        # for example?
+
+        k = str(uuid.uuid4())
+        usernames[k] = name
+
+        headers = list(html_headers)
+        headers.append(('Location', '/status'))
+        headers.append(('Set-Cookie', 'name1=%s' % k))
+
+        start_response('302 Found', headers)
+        return ["Redirect to /status..."]
+
+    def logout(self, environ, start_response):
+        if 'HTTP_COOKIE' in environ:
+            c = SimpleCookie(environ.get('HTTP_COOKIE', ''))
+            if 'name1' in c:
+                key = c.get('name1').value
+                name1_key = key
+
+                if key in usernames:
+                    del usernames[key]
+                    print 'DELETING'
+
+        pair = ('Set-Cookie',
+                'name1=deleted; Expires=Thu, 01-Jan-1970 00:00:01 GMT;')
+        headers = list(html_headers)
+        headers.append(('Location', '/status'))
+        headers.append(pair)
+
+        start_response('302 Found', headers)
+        return ["Redirect to /status..."]
+
+    def status(self, environ, start_response):
+        start_response('200 OK', list(html_headers))
+
+        name1 = ''
+        name1_key = '*empty*'
+        if 'HTTP_COOKIE' in environ:
+            c = SimpleCookie(environ.get('HTTP_COOKIE', ''))
+            if 'name1' in c:
+                key = c.get('name1').value
+                name1 = usernames.get(key, '')
+                name1_key = key
+                
+        title = 'login status'
+        template = env.get_template('status.html')
         return str(template.render(locals()))
 
     def recipes(self, environ, start_response):
@@ -174,8 +254,15 @@ class SimpleApp(object):
         start_response("200 OK", list(html_headers))
 
         title = "convert form"
-        template = env.get_template("convert_form.html")
+        template = env.get_template("convert_form_ajax_jsonrpc.html")
         return str(template.render(locals()))
+    def convert_form_ajax_jsonrpc(self, environ, start_response):
+        start_response("200 OK", list(html_headers))
+
+        title = "convert form"
+        template = env.get_template("convert_form_ajax_jsonrpc.html")
+        return str(template.render(locals()))   
+
 
     def do_convert(self, environ, start_response):
         start_response("200 OK", list(html_headers))
@@ -230,6 +317,7 @@ class SimpleApp(object):
         return str(response)
 
     def rpc_convert_units_to_ml(self, amount):
+        print "converting..."
         return "%s ml" % (db.convert_to_ml(amount))
 
     def rpc_get_recipe_names(self):

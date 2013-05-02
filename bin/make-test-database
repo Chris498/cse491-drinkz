@@ -1,49 +1,161 @@
 #! /usr/bin/env python
 import sys
 import _mypath
-
+import sqlite3
 from drinkz import db, recipes
+import os
 
 def main(args):
     if len(args) != 2:
         print >>sys.stderr, "Usage: %s <filename>" % args[0]
         sys.exit(1)
 
+    os.unlink('data.db')
+    myDB = sqlite3.connect('data.db')
+    c = myDB.cursor()
+    
+    c.execute('CREATE TABLE BottleTypes (i TEXT, j TEXT, k TEXT)')
+    c.execute('CREATE TABLE Inventory (i TEXT, j TEXT, k TEXT)')
+    c.execute('CREATE TABLE Recipes (i TEXT, j TEXT, k TEXT)')
+    c.execute('CREATE TABLE Music (i TEXT, j TEXT, k TEXT, l TEXT)')
+    
     filename = args[1]
     
-    db.add_bottle_type('Johnnie Walker', 'black label', 'blended scotch')
-    db.add_to_inventory('Johnnie Walker', 'black label', '500 ml')
+    mfg = "Johnnie Walker"
+    liquor = "black label"
+    type = "blended scotch"
+    amount = "500 ml"
+    c.execute('INSERT INTO BottleTypes (i, j, k) VALUES (?, ?, ?)', (mfg, liquor,type))
+    c.execute('INSERT INTO Inventory (i,j,k) VALUES (?, ?, ?)', (mfg, liquor, amount))
 
-    db.add_bottle_type('Uncle Herman\'s', 'moonshine', 'blended scotch')
-    db.add_to_inventory('Uncle Herman\'s', 'moonshine', '5 liter')
+   
+   # db.add_bottle_type('Johnnie Walker', 'black label', 'blended scotch')
+   # db.add_to_inventory('Johnnie Walker', 'black label', '500 ml')
+
+    mfg = "Uncle Hermans"
+    liquor = "moonshine"
+    type = "blended scotch"
+    amount = "5 liter"
+    c.execute('INSERT INTO BottleTypes (i, j, k) VALUES (?, ?, ?)', (mfg, liquor,type))
+    c.execute('INSERT INTO Inventory (i,j,k) VALUES (?, ?, ?)', (mfg, liquor, amount))
+
+    #db.add_bottle_type('Uncle Herman\'s', 'moonshine', 'blended scotch')
+    #db.add_to_inventory('Uncle Herman\'s', 'moonshine', '5 liter')
     
-    db.add_bottle_type('Gray Goose', 'vodka', 'unflavored vodka')
-    db.add_to_inventory('Gray Goose', 'vodka', '1 liter')
+    mfg = "Gray Goose"
+    liquor = "vodka"
+    type = "unflavored vodka"
+    amount = "1 liter"
+    c.execute('INSERT INTO BottleTypes (i, j, k) VALUES (?, ?, ?)', (mfg, liquor,type))
+    c.execute('INSERT INTO Inventory (i,j,k) VALUES (?, ?, ?)', (mfg, liquor, amount))
 
-    db.add_bottle_type('Rossi', 'extra dry vermouth', 'vermouth')
-    db.add_to_inventory('Rossi', 'extra dry vermouth', '24 oz')
+    #db.add_bottle_type('Gray Goose', 'vodka', 'unflavored vodka')
+    #db.add_to_inventory('Gray Goose', 'vodka', '1 liter')
 
-    r = recipes.Recipe('scotch on the rocks', [('blended scotch', '4 oz')])
-    db.add_recipe(r)
+    mfg = "Rossi"
+    liquor = "extra dry vermouth"
+    type = "vermouth"
+    amount = "24 oz"
+    c.execute('INSERT INTO BottleTypes (i, j, k) VALUES (?, ?, ?)', (mfg, liquor,type))
+    c.execute('INSERT INTO Inventory (i,j,k) VALUES (?, ?, ?)', (mfg, liquor, amount))
 
-    r = recipes.Recipe('vodka martini', [('unflavored vodka', '6 oz'),
-                                        ('vermouth', '1.5 oz')])
-    db.add_recipe(r)
+    #db.add_bottle_type('Rossi', 'extra dry vermouth', 'vermouth')
+    #db.add_to_inventory('Rossi', 'extra dry vermouth', '24 oz')
 
-    r = recipes.Recipe('vomit inducing martini', [('orange juice',
-                                                  '6 oz'),
-                                                 ('vermouth',
-                                                  '1.5 oz')])
-    db.add_recipe(r)
 
-    r = recipes.Recipe('whiskey bath', [('blended scotch', '2 liter')])
-    db.add_recipe(r)
+    RecipeName = "scotch on the rocks"
+    ingredType = "blended scotch"
+    ingredAmount = "4 oz"
+    c.execute('INSERT INTO Recipes (i,j,k) VALUES (?, ?, ?)', (RecipeName, ingredType, ingredAmount))
 
-    r = recipes.Recipe('whiskey lake', [('blended scotch', '6 liter')])
-    db.add_recipe(r)
+    #r = recipes.Recipe('scotch on the rocks', [('blended scotch', '4 oz')])
+    #db.add_recipe(r)
 
-    db.save_db(filename)
 
+    #RecipeName = "vodka martini"
+    #ingredType = "unflavored vodkah"
+    #ingredAmount = "6 oz"
+    #c.execute('INSERT INTO Recipes (i,j,k) VALUES (?, ?, ?)', (RecipeName, ingredType, ingredAmount))
+    
+    RecipeName = "vodka martini"
+    ingredType = "vermouthh"
+    ingredAmount = "1.5 oz"
+    c.execute('INSERT INTO Recipes (i,j,k) VALUES (?, ?, ?)', (RecipeName, ingredType, ingredAmount))
+    #r = recipes.Recipe('vodka martini', [('unflavored vodka', '6 oz'),
+    #                                    ('vermouth', '1.5 oz')])
+    #db.add_recipe(r)
+
+    RecipeName = "vomit inducing martini"
+    ingredType = "orange juice"
+    ingredAmount = "6 oz"
+    c.execute('INSERT INTO Recipes (i,j,k) VALUES (?, ?, ?)', (RecipeName, ingredType, ingredAmount))
+
+    #RecipeName = "vomit inducing martini"
+    #ingredType = "vermouth"
+    #ingredAmount = "1.5 oz"
+    #c.execute('INSERT INTO Recipes (i,j,k) VALUES (?, ?, ?)', (RecipeName, ingredType, ingredAmount))
+
+    #r = recipes.Recipe('vomit inducing martini', [('orange juice',
+    #                                              '6 oz'),
+    #                                             ('vermouth',
+    #                                              '1.5 oz')])
+    #db.add_recipe(r)
+
+
+    RecipeName = "whiskey bath"
+    ingredType = "blended scotch"
+    ingredAmount = "2 liter"
+    c.execute('INSERT INTO Recipes (i,j,k) VALUES (?, ?, ?)', (RecipeName, ingredType, ingredAmount))
+
+    #r = recipes.Recipe('whiskey bath', [('blended scotch', '2 liter')])
+    #db.add_recipe(r)
+
+    RecipeName = "whiskey lake"
+    ingredType = "blended scotch"
+    ingredAmount = "6 liter"
+    c.execute('INSERT INTO Recipes (i,j,k) VALUES (?, ?, ?)', (RecipeName, ingredType, ingredAmount))
+    #r = recipes.Recipe('whiskey lake', [('blended scotch', '6 liter')])
+    #db.add_recipe(r)
+
+    guestName = "John"
+    song = "Bloom"
+    artist = "Radiohead"
+    album = "The King of Limbs"
+    c.execute('INSERT INTO Music (i,j,k,l) VALUES (?, ?, ?, ?)', (guestName, song, artist, album))
+
+    guestName = "Ted"
+    song = "Lazy Eye"
+    artist = "Silversun Pickups"
+    album = "Carnavas"
+    c.execute('INSERT INTO Music (i,j,k,l) VALUES (?, ?, ?, ?)', (guestName, song, artist, album))
+
+    guestName = "Fred"
+    song = "More Than a Feeling"
+    artist = "Boston"
+    album = "Boston"
+    c.execute('INSERT INTO Music (i,j,k,l) VALUES (?, ?, ?, ?)', (guestName, song, artist, album))
+
+    c.execute('SELECT * FROM BottleTypes')
+    results = c.fetchall()
+    print results
+
+    c.execute('SELECT * FROM Inventory')
+    results = c.fetchall()
+    print results
+
+    c.execute('SELECT * FROM Recipes')
+    results = c.fetchall()
+    print results
+   
+
+    c.execute('SELECT * FROM Music')   
+    results = c.fetchall() 
+    print results
+
+    #db.save_db(filename)
+
+
+    myDB.commit()
 if __name__ == '__main__':
    main(sys.argv)
 

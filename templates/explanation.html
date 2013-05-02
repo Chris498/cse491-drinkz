@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<b>
+My implemented feature from HW 5.2 is the ability for party guests to let the host know before hand about
+<p>
+their music preferences. This allows the host to prepare before the party and make a really good playlist!
+<p>
+I implemented a whole new music dictionary to store all the information in. The user enters his name
+<p>
+on the form (mandatory) and then can choose which of the three forms: song, artist, and album, he wants to
+<p>
+fill out if any. The user is even allowed to make multiple requests because his music choices are stored 
+<p>
+in a list that is stored in a dictionary with his name being the key. The webpage I built allows the user
+<p>
+to see other peoples choices and automatically updates when he submits his own music preference. Any
+<p>
+ field that is left blank from song, artist, or album is automatically set to 'No Preference' for the user.
+</b>
+{% endblock %}

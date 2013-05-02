@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<html>
+
+<!-- Show off some jQuery functionality --> 
+
+<head>
+<script type="text/javascript" charset="utf-8" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+</head>
+<body>
+<b>New Convert Site Using Ajax and JSONRPC</b>
+
+<p class="middle_paragraph">
+Something else goes here.
+</p>
+
+<!-- The above <p> element is then dynamically replaced with 'Yo', below. -->
+<script type="text/javascript">
+$("p.middle_paragraph").html("Please enter an amount to be converted to Ml's")
+</script>
+
+<p>
+
+
+<p>
+
+Retrieve from server: Convert units to ml. <b> Please enter the amount </b> <input type='text' class='a' value='' size='4' />
+<b>and now enter the units </b>
+<input type='text' class='b' value='' size='4' />:
+
+<p class='toupdate' />
+
+<script type="text/javascript">
+
+function update_result(a, b, c) {
+   text = '<font color="red"><b>' + a +" "+b+ ' converted is: '  + c + '</font></b>';
+   $('p.toupdate').html(text);
+}
+
+function do_add() {
+ a = $('input.a').val();
+
+ b = $('input.b').val();
+
+ d = a+" "+b
+ $.ajax({
+     url: '/rpc', 
+     data: JSON.stringify ({method:'convert_units_to_ml', params:[d,], id:"0"} ),
+     type: "POST",
+     dataType: "json",
+     success: function (data) { update_result(a, b, data.result) },
+     error: function (err)  { alert ("Error");}
+  });
+}
+
+$('input.a').change(do_add);
+$('input.b').change(do_add);
+</script>
+
+</body>
+</html>
+{% endblock %}
+
